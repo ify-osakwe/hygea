@@ -1,0 +1,36 @@
+name: hygea
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+    environment:
+      SERVER_PORT: 4005
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/hygea_auth_db
+      SPRING_DATASOURCE_USERNAME: hygea_auth_admin
+      SPRING_DATASOURCE_PASSWORD: hygea_auth_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "4005:4005"
+    depends_on:
+      auth-service-db:
+        condition: service_healthy
+
+  auth-service-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: hygea_auth_db
+      POSTGRES_USER: hygea_auth_admin
+      POSTGRES_PASSWORD: hygea_auth_password
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    ports:
+      - "15440:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\" -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  auth-db-data:
