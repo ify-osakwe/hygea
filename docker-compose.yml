@@ -39,6 +39,18 @@ services:
       - "4001:4001"
       - "9001:9001"
 
+  analytics-service:
+    build:
+      context: ./analytics-service
+    environment:
+      SERVER_PORT: 4002
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "4002:4002"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
   patient-service:
     build:
       context: ./patient-service
