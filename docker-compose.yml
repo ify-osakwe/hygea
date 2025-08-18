@@ -1,6 +1,17 @@
 name: hygea
 
 services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    environment:
+      SERVER_PORT: 4004
+    ports:
+      - "4004:4004"
+    depends_on:
+      patient-service:
+        condition: service_started
+
   auth-service:
     build:
       context: ./auth-service
