@@ -6,6 +6,7 @@ services:
       context: ./api-gateway
     environment:
       SERVER_PORT: 4004
+      AUTH_SERVICE_URL: http://auth-service:4005
     ports:
       - "4004:4004"
     depends_on:
@@ -21,6 +22,7 @@ services:
       SPRING_DATASOURCE_USERNAME: hygea_auth_admin
       SPRING_DATASOURCE_PASSWORD: hygea_auth_password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: neurodevelopmental
     ports:
       - "4005:4005"
     depends_on:

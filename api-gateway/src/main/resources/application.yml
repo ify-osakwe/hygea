@@ -9,12 +9,13 @@ spring:
           routes:
             ## REST CLIENT -> http://localhost:4004/api/patients
             ## API GATEWAY -> http://patient-service:4000/patients
-            - id: patient-service-routes
+            - id: patient-service-route
               uri: http://patient-service:4000
               predicates:
                 - Path=/api/patients/**
               filters:
                 - StripPrefix=1
+                - JwtValidation
 
             ## REST CLIENT -> http://localhost:4004/api-docs/patients
             ## API GATEWAY -> http://patient-service:4000/v3/api-docs
@@ -24,3 +25,18 @@ spring:
                 - Path=/api-docs/patients
               filters:
                 - RewritePath=/api-docs/patients,/v3/api-docs
+
+            ## API GATEWAY -> http://auth-service:4005/patients
+            - id: auth-service-route
+              uri: http://auth-service:4005
+              predicates:
+                - Path=/auth/**
+              filters:
+                - StripPrefix=1
+
+            - id: api-docs-auth-route
+              uri: http://auth-service:4005
+              predicates:
+                - Path=/api-docs/auth
+              filters:
+                - RewritePath=/api-docs/auth,/v3/api-docs
